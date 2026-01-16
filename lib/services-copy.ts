@@ -453,8 +453,14 @@ function getProfile(location: Location): LocationProfile {
 
 function serviceWhySection(service: Service, location: Location, profile: LocationProfile): string {
   const baseIntro = `Residents in ${location.name} tend to look for ${service.name.toLowerCase()} when the practical reality of the neighborhood meets the practical reality of the building.`
+  const slugify = (s: string) =>
+  s
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '')
 
-  switch (service.slug) {
+ switch (slugify(service.name)) {
+
     case 'moving-companies':
       return (
         `${baseIntro} In this area, move-day success usually comes down to logistics: access to the building, stairs vs elevators, and whether management requires scheduled elevator time or a certificate of insurance. ${profile.buildingStock} If you’re moving into a doorman or managed building, ask about move windows, protection requirements for hallways, and how elevator reservations work. For walk-ups, confirm how many flights your crew expects and whether bulky items need disassembly.
@@ -509,7 +515,8 @@ Pair the inspection with Building Health X. If the address shows repeated HPD/DO
 }
 
 function whatToLookFor(service: Service): string[] {
-  switch (service.slug) {
+  switch (slugify(service.name)) {
+
     case 'moving-companies':
       return [
         'Transparent estimates with inventory and stairs/elevator assumptions called out',
