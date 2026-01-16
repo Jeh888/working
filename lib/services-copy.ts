@@ -8,6 +8,11 @@ type LocationProfile = {
   landmarks: string
   commonChallenges: string
 }
+const slugify = (s: string) =>
+  s
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '')
 
 function extendContext(location: Location, profile: LocationProfile) {
   // Add a third paragraph that is different per neighborhood (uses distinct transit/landmarks/building stock fields).
@@ -453,11 +458,6 @@ function getProfile(location: Location): LocationProfile {
 
 function serviceWhySection(service: Service, location: Location, profile: LocationProfile): string {
   const baseIntro = `Residents in ${location.name} tend to look for ${service.name.toLowerCase()} when the practical reality of the neighborhood meets the practical reality of the building.`
-  const slugify = (s: string) =>
-  s
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '')
 
  switch (slugify(service.name)) {
 
