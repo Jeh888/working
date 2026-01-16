@@ -1,3 +1,26 @@
+// Type definitions
+export type Service = {
+  name: string
+  description: string
+  category: string
+  intro: string
+  whyNeed: string[]
+  whatToLookFor: { title: string; desc: string }[]
+  costRange: string
+  timeline: string
+  faqs: { q: string; a: string }[]
+}
+
+export type Location = {
+  name: string
+  borough: string
+  description: string
+  buildingTypes: string
+  transit: string
+  character: string
+  challenges: string
+}
+
 // Service definitions with rich SEO content
 export const services: Record<string, {
   name: string
