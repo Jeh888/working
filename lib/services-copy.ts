@@ -444,7 +444,7 @@ The Staten Island Railway helps for ferry connectivity, but most service appoint
 
 function getProfile(location: Location): LocationProfile {
   const base: LocationProfile =
-    LOCATION_PROFILES[location.name] || {
+    LOCATION_PROFILES[slugify(location.name)] || {
       buildingStock: 'A mix of older and newer NYC apartment buildings.',
       transit: 'Subway and bus access varies by pocket.',
       landmarks: location.name,
