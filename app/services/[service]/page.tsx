@@ -1,14 +1,41 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { ChevronRight, MapPin, CheckCircle2, Clock, DollarSign, Building2, Lightbulb, HelpCircle, Truck, Package, Archive, Trash2, Sparkles, Scale, Home, ClipboardCheck, Shield, Wifi, Key, Wrench, PaintBucket, Bug, Thermometer, Droplets, Zap, AlertOctagon } from 'lucide-react'
+import {
+  ChevronRight,
+  MapPin,
+  CheckCircle2,
+  Clock,
+  DollarSign,
+  Building2,
+  Lightbulb,
+  HelpCircle,
+  Truck,
+  Package,
+  Archive,
+  Trash2,
+  Sparkles,
+  Scale,
+  Home,
+  ClipboardCheck,
+  Shield,
+  Wifi,
+  Key,
+  Wrench,
+  PaintBucket,
+  Bug,
+  Thermometer,
+  Droplets,
+  Zap,
+  AlertOctagon,
+} from 'lucide-react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { services } from '@/lib/services-data'
 import { locations } from '@/lib/locations-data'
 
 // Helper to get icon component
-const getServiceIcon = (service: string, size: string = "w-6 h-6") => {
+const getServiceIcon = (service: string, size: string = 'w-6 h-6') => {
   const icons: Record<string, React.ReactNode> = {
     'moving-companies': <Truck className={size} />,
     'packing-services': <Package className={size} />,
@@ -20,13 +47,13 @@ const getServiceIcon = (service: string, size: string = "w-6 h-6") => {
     'building-inspectors': <ClipboardCheck className={size} />,
     'renters-insurance': <Shield className={size} />,
     'internet-providers': <Wifi className={size} />,
-    'locksmith': <Key className={size} />,
+    locksmith: <Key className={size} />,
     'furniture-assembly': <Wrench className={size} />,
-    'painters': <PaintBucket className={size} />,
+    painters: <PaintBucket className={size} />,
     'pest-control': <Bug className={size} />,
     'hvac-repair': <Thermometer className={size} />,
-    'plumbers': <Droplets className={size} />,
-    'electricians': <Zap className={size} />,
+    plumbers: <Droplets className={size} />,
+    electricians: <Zap className={size} />,
     'mold-remediation': <AlertOctagon className={size} />,
   }
   return icons[service] || <Wrench className={size} />
@@ -37,7 +64,10 @@ const locationsByBorough = Object.entries(locations).reduce((acc, [slug, loc]) =
   if (!acc[loc.borough]) acc[loc.borough] = []
   acc[loc.borough].push({ slug, ...loc })
   return acc
-}, {} as Record<string, Array<{ slug: string; name: string; borough: string; description: string; buildingTypes: string; transit: string; character: string; challenges: string }>>)
+}, {} as Record<
+  string,
+  Array<{ slug: string; name: string; borough: string; description: string; buildingTypes: string; transit: string; character: string; challenges: string }>
+>)
 
 const boroughOrder = ['Manhattan', 'Brooklyn', 'Queens', 'Bronx', 'Staten Island']
 
@@ -75,12 +105,15 @@ export default function ServicePage({ params }: Props) {
       <Header />
       <main className="pt-24 pb-16">
         <div className="max-w-7xl mx-auto px-6">
-          
           {/* Breadcrumb */}
           <nav className="flex items-center gap-2 text-sm text-slate-500 mb-8">
-            <Link href="/" className="hover:text-white transition">Home</Link>
+            <Link href="/" className="hover:text-white transition">
+              Home
+            </Link>
             <ChevronRight className="w-4 h-4" />
-            <Link href="/services" className="hover:text-white transition">Services</Link>
+            <Link href="/services" className="hover:text-white transition">
+              Services
+            </Link>
             <ChevronRight className="w-4 h-4" />
             <span className="text-white">{service.name}</span>
           </nav>
@@ -95,10 +128,10 @@ export default function ServicePage({ params }: Props) {
                 {Object.keys(locations).length} NYC Neighborhoods
               </span>
             </div>
-            
+
             <div className="flex items-start gap-6 mb-6">
               <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center text-white flex-shrink-0">
-                {getServiceIcon(params.service, "w-8 h-8")}
+                {getServiceIcon(params.service, 'w-8 h-8')}
               </div>
               <div>
                 <h1 className="font-display text-4xl sm:text-5xl font-bold mb-4 leading-tight">
@@ -107,9 +140,7 @@ export default function ServicePage({ params }: Props) {
                     New York City
                   </span>
                 </h1>
-                <p className="text-xl text-slate-300 max-w-3xl leading-relaxed">
-                  {service.intro}
-                </p>
+                <p className="text-xl text-slate-300 max-w-3xl leading-relaxed">{service.intro}</p>
               </div>
             </div>
 
@@ -148,19 +179,18 @@ export default function ServicePage({ params }: Props) {
           {/* MAIN CONTENT */}
           <div className="grid lg:grid-cols-3 gap-12">
             <div className="lg:col-span-2 space-y-12">
-
               {/* Browse by Borough */}
               <section>
                 <h2 className="text-2xl font-bold mb-6">Find {service.name} by Neighborhood</h2>
                 <p className="text-slate-400 mb-8">
-                  Select a neighborhood below to find {service.name.toLowerCase()} specific to that area, 
+                  Select a neighborhood below to find {service.name.toLowerCase()} specific to that area,
                   including local tips, pricing, and what to look for.
                 </p>
-                
+
                 {boroughOrder.map((borough) => {
                   const boroughLocations = locationsByBorough[borough]
                   if (!boroughLocations || boroughLocations.length === 0) return null
-                  
+
                   return (
                     <div key={borough} className="mb-8">
                       <h3 className="text-lg font-semibold text-slate-300 mb-4 flex items-center gap-2">
@@ -252,9 +282,9 @@ export default function ServicePage({ params }: Props) {
                     <div>
                       <h4 className="font-semibold text-amber-300 mb-2">NYC-Specific Tip</h4>
                       <p className="text-slate-400 text-sm">
-                        Prices can vary significantly by neighborhood and building type. Manhattan tends to be 
-                        more expensive, while outer boroughs often offer better rates. Always get multiple quotes 
-                        and ask about any building-specific requirements that might affect pricing.
+                        Prices can vary significantly by neighborhood and building type. Manhattan tends to be more expensive,
+                        while outer boroughs often offer better rates. Always get multiple quotes and ask about any building-specific
+                        requirements that might affect pricing.
                       </p>
                     </div>
                   </div>
@@ -288,10 +318,10 @@ export default function ServicePage({ params }: Props) {
                   <h2 className="text-2xl font-bold">Moving to NYC?</h2>
                 </div>
                 <p className="text-slate-300 mb-6">
-                  Before you sign a lease, check the building's history. Building Health X shows violations, complaints, 
+                  Before you sign a lease, check the building's history. Building Health X shows violations, complaints,
                   and issues from 55+ official NYC sources—free.
                 </p>
-                <Link 
+                <Link
                   href="/"
                   className="inline-flex items-center gap-2 px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-xl transition"
                 >
@@ -302,40 +332,85 @@ export default function ServicePage({ params }: Props) {
             </div>
 
             {/* SIDEBAR */}
-            <div className="lg:col-span-1 space-y-6">
-              
-              {/* CTA Form */}
-              <div className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-blue-500/20 rounded-2xl p-6 sticky top-28">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-xl flex items-center justify-center text-white">
-                    {getServiceIcon(params.service)}
+            <div className="lg:col-span-1">
+              <div className="space-y-6 lg:sticky lg:top-28 self-start">
+                {/* CTA Form (no sticky here anymore) */}
+                <div className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-blue-500/20 rounded-2xl p-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-xl flex items-center justify-center text-white">
+                      {getServiceIcon(params.service)}
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-lg">Get {service.name}</h3>
+                      <p className="text-sm text-slate-400">Connect with trusted providers</p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-lg">Get {service.name}</h3>
-                    <p className="text-sm text-slate-400">Connect with trusted providers</p>
-                  </div>
+                  <form className="space-y-3">
+                    <input
+                      type="text"
+                      placeholder="Name"
+                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500 transition"
+                    />
+                    <input
+                      type="email"
+                      placeholder="Email"
+                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500 transition"
+                    />
+                    <input
+                      type="tel"
+                      placeholder="Phone"
+                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500 transition"
+                    />
+                    <input
+                      type="text"
+                      placeholder="NYC Neighborhood"
+                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500 transition"
+                    />
+                    <textarea
+                      placeholder="Brief description of your need"
+                      rows={3}
+                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500 transition resize-none"
+                    />
+                    <button className="w-full py-3.5 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold rounded-xl transition">
+                      Request {service.name}
+                    </button>
+                  </form>
+                  <p className="text-xs text-slate-500 mt-4 text-center">
+                    By submitting, you agree to be contacted about your request.
+                  </p>
                 </div>
-                <form className="space-y-3">
-                  <input type="text" placeholder="Name" className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500 transition" />
-                  <input type="email" placeholder="Email" className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500 transition" />
-                  <input type="tel" placeholder="Phone" className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500 transition" />
-                  <input type="text" placeholder="NYC Neighborhood" className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500 transition" />
-                  <textarea placeholder="Brief description of your need" rows={3} className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-blue-500 transition resize-none" />
-                  <button className="w-full py-3.5 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold rounded-xl transition">
-                    Request {service.name}
-                  </button>
-                </form>
-                <p className="text-xs text-slate-500 mt-4 text-center">By submitting, you agree to be contacted about your request.</p>
-              </div>
 
-              {/* Related Services (Same Category) */}
-              {relatedServices.length > 0 && (
+                {/* Related Services (Same Category) */}
+                {relatedServices.length > 0 && (
+                  <div className="bg-[#12161f] border border-white/5 rounded-xl p-5">
+                    <h3 className="font-semibold mb-4 text-sm text-slate-400 uppercase tracking-wider">
+                      Related {service.category}
+                    </h3>
+                    <div className="space-y-2">
+                      {relatedServices.map(([slug, svc]) => (
+                        <Link
+                          key={slug}
+                          href={`/services/${slug}`}
+                          className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition group"
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 bg-white/5 rounded-lg flex items-center justify-center text-slate-400 group-hover:text-white transition">
+                              {getServiceIcon(slug, 'w-4 h-4')}
+                            </div>
+                            <span className="text-sm">{svc.name}</span>
+                          </div>
+                          <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-white transition" />
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Other Services */}
                 <div className="bg-[#12161f] border border-white/5 rounded-xl p-5">
-                  <h3 className="font-semibold mb-4 text-sm text-slate-400 uppercase tracking-wider">
-                    Related {service.category}
-                  </h3>
+                  <h3 className="font-semibold mb-4 text-sm text-slate-400 uppercase tracking-wider">Other Services</h3>
                   <div className="space-y-2">
-                    {relatedServices.map(([slug, svc]) => (
+                    {otherServices.map(([slug, svc]) => (
                       <Link
                         key={slug}
                         href={`/services/${slug}`}
@@ -343,7 +418,7 @@ export default function ServicePage({ params }: Props) {
                       >
                         <div className="flex items-center gap-3">
                           <div className="w-8 h-8 bg-white/5 rounded-lg flex items-center justify-center text-slate-400 group-hover:text-white transition">
-                            {getServiceIcon(slug, "w-4 h-4")}
+                            {getServiceIcon(slug, 'w-4 h-4')}
                           </div>
                           <span className="text-sm">{svc.name}</span>
                         </div>
@@ -351,59 +426,33 @@ export default function ServicePage({ params }: Props) {
                       </Link>
                     ))}
                   </div>
+                  <Link href="/services" className="block mt-4 text-center text-sm text-blue-400 hover:text-blue-300 transition">
+                    View all services →
+                  </Link>
                 </div>
-              )}
 
-              {/* Other Services */}
-              <div className="bg-[#12161f] border border-white/5 rounded-xl p-5">
-                <h3 className="font-semibold mb-4 text-sm text-slate-400 uppercase tracking-wider">
-                  Other Services
-                </h3>
-                <div className="space-y-2">
-                  {otherServices.map(([slug, svc]) => (
-                    <Link
-                      key={slug}
-                      href={`/services/${slug}`}
-                      className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition group"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-white/5 rounded-lg flex items-center justify-center text-slate-400 group-hover:text-white transition">
-                          {getServiceIcon(slug, "w-4 h-4")}
-                        </div>
-                        <span className="text-sm">{svc.name}</span>
-                      </div>
-                      <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-white transition" />
-                    </Link>
-                  ))}
-                </div>
-                <Link href="/services" className="block mt-4 text-center text-sm text-blue-400 hover:text-blue-300 transition">
-                  View all services →
-                </Link>
-              </div>
-
-              {/* Quick Borough Links */}
-              <div className="bg-[#12161f] border border-white/5 rounded-xl p-5">
-                <h3 className="font-semibold mb-4 text-sm text-slate-400 uppercase tracking-wider">
-                  Jump to Borough
-                </h3>
-                <div className="space-y-2">
-                  {boroughOrder.map((borough) => {
-                    const count = locationsByBorough[borough]?.length || 0
-                    if (count === 0) return null
-                    return (
-                      <Link
-                        key={borough}
-                        href={`/services/${params.service}/${borough.toLowerCase().replace(' ', '-')}`}
-                        className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition group"
-                      >
-                        <div className="flex items-center gap-3">
-                          <MapPin className="w-4 h-4 text-blue-400" />
-                          <span className="text-sm">{borough}</span>
-                        </div>
-                        <span className="text-xs text-slate-500">{count} areas</span>
-                      </Link>
-                    )
-                  })}
+                {/* Quick Borough Links */}
+                <div className="bg-[#12161f] border border-white/5 rounded-xl p-5">
+                  <h3 className="font-semibold mb-4 text-sm text-slate-400 uppercase tracking-wider">Jump to Borough</h3>
+                  <div className="space-y-2">
+                    {boroughOrder.map((borough) => {
+                      const count = locationsByBorough[borough]?.length || 0
+                      if (count === 0) return null
+                      return (
+                        <Link
+                          key={borough}
+                          href={`/services/${params.service}/${borough.toLowerCase().replace(' ', '-')}`}
+                          className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition group"
+                        >
+                          <div className="flex items-center gap-3">
+                            <MapPin className="w-4 h-4 text-blue-400" />
+                            <span className="text-sm">{borough}</span>
+                          </div>
+                          <span className="text-xs text-slate-500">{count} areas</span>
+                        </Link>
+                      )
+                    })}
+                  </div>
                 </div>
               </div>
             </div>
