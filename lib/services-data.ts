@@ -1,5 +1,6 @@
 // Type definitions
 type Location = {
+  slug: string
   name: string
   borough: string
   description: string
