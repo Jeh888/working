@@ -1,16 +1,5 @@
 // Type definitions
-type Location = {
-  slug: string
-  name: string
-  borough: string
-  description: string
-  buildingTypes: string
-  transit: string
-  character: string
-  challenges: string
-}
-
-type Service = {
+export type Service = {
   name: string
   description: string
   category: string
@@ -22,582 +11,428 @@ type Service = {
   faqs: { q: string; a: string }[]
 }
 
-type LocationProfile = {
-  /** 150+ words across paragraphs once rendered */
-  context: string
-  buildingStock: string
+export type Location = {
+  name: string
+  borough: string
+  description: string
+  buildingTypes: string
   transit: string
-  landmarks: string
-  commonChallenges: string
+  character: string
+  challenges: string
 }
 
-function extendContext(location: Location, profile: LocationProfile) {
-  // Add a third paragraph that is different per neighborhood (uses distinct transit/landmarks/building stock fields).
-  // This keeps pages substantive while avoiding “find/replace” doorway copy.
-  const extra = `A quick way to pressure-test a decision in ${location.name} is to treat access + building type as first-class constraints. ${profile.transit} Nearby reference points like ${profile.landmarks} help you sanity-check whether the building is in a high-foot-traffic corridor or a quieter pocket. The building stock matters too: ${profile.buildingStock} If you’re comparing a few addresses, use Building Health X to see whether ${profile.commonChallenges.toLowerCase()} shows up as a one-off spike or a repeating pattern across seasons.`
-
-  return `${profile.context}\n\n${extra}`
-}
-
-// Intentionally unique, neighborhood-specific writing to avoid templated “doorway page” patterns.
-// We keep the structure consistent but the substance varies materially by neighborhood.
-const LOCATION_PROFILES: Record<string, LocationProfile> = {
-  // Manhattan
-  'upper-east-side': {
-    buildingStock:
-      'Pre-war co-ops along Park/Madison plus post-war towers on Yorkville avenues; many staffed lobbies, strict move rules, and elevator reservations.',
-    transit:
-      '4/5/6, Q, and crosstown buses; traffic on 2nd/3rd Ave can bottleneck deliveries and service calls.',
-    landmarks:
-      'Central Park, Museum Mile, and the East River Esplanade; dense co-op corridors near Park/Madison.',
-    commonChallenges:
-      'Co-op/condo building rules, service elevator scheduling, and curb access on narrow side streets.',
-    context:
-      `Upper East Side buildings skew toward doorman co-ops and large elevator buildings, with a meaningful pocket of older walk-ups in Yorkville. That mix matters for any service visit: co-ops often require a certificate of insurance, approved vendor lists, and scheduled elevator time, while older walk-ups turn every job into a stairs-and-hallways logistics problem. Street conditions are also different block to block — quiet side streets near Park Avenue can be easier to stage on, while 2nd/3rd Avenue corridors are busier and more constrained.
-
-Transit access is excellent (4/5/6 and Q), but vehicle access is the real variable; double-parking rules and limited loading zones can slow appointments. The neighborhood’s building age range also means you’ll see everything from older steam heat systems to modernized high-rises, so the “same” issue (leaks, pests, noise) can have totally different root causes depending on the building type. If you’re comparing addresses, Building Health X helps you see whether problems are isolated to one property or consistent across a few nearby buildings.`,
+// Service definitions with rich SEO content
+export const services: Record<string, {
+  name: string
+  description: string
+  category: string
+  intro: string
+  whyNeed: string[]
+  whatToLookFor: { title: string; desc: string }[]
+  costRange: string
+  timeline: string
+  faqs: { q: string; a: string }[]
+}> = {
+  'moving-companies': {
+    name: 'Moving Companies',
+    description: 'Licensed and insured NYC movers for local and long-distance moves',
+    category: 'Moving Services',
+    intro: `Finding a reliable moving company in New York City requires more research than in most cities. NYC presents unique challenges: narrow staircases in pre-war buildings, strict co-op and condo board requirements, limited street parking, and tight elevator schedules. Professional NYC movers understand these challenges and come prepared with the right equipment, insurance, and experience.`,
+    whyNeed: [
+      'NYC buildings often require professional movers with specific insurance coverage (COI)',
+      'Pre-war buildings have narrow staircases and tight corners requiring experience',
+      'Many co-ops and condos restrict move times to specific windows',
+      'Street parking for moving trucks is limited and heavily regulated',
+      'Professional movers protect your belongings AND the building\'s common areas'
+    ],
+    whatToLookFor: [
+      { title: 'NYC DOT License', desc: 'All local movers must be licensed by NYC Department of Transportation. Verify their license number before booking.' },
+      { title: 'COI Capability', desc: 'Can they provide a Certificate of Insurance with your building listed as additional insured? Most NYC buildings require this.' },
+      { title: 'Transparent Pricing', desc: 'Get written estimates breaking down hourly rates, truck fees, and additional charges. Avoid vague quotes.' },
+      { title: 'Building Experience', desc: 'Have they worked in your building type before? Ask about walk-ups, co-ops, or high-rises specifically.' },
+      { title: 'Reviews with Details', desc: 'Look for reviews mentioning specific neighborhoods or building types similar to yours.' }
+    ],
+    costRange: '$400–$800 for studios, $600–$1,200 for 1BR, $900–$1,800 for 2BR, $1,500–$3,000+ for 3BR+',
+    timeline: 'Book 2–4 weeks ahead; 6+ weeks for peak season',
+    faqs: [
+      { q: 'How far in advance should I book movers?', a: 'Book 2-3 weeks ahead for most moves. For month-end dates or summer moves, book 4-6 weeks in advance.' },
+      { q: 'What is a COI and do I need one?', a: 'A Certificate of Insurance proves the mover carries liability coverage. Most NYC buildings require one naming the building as additional insured.' },
+      { q: 'Can I move on weekends?', a: 'Depends on your building. Many co-ops only allow weekday moves. Check with building management before booking.' },
+      { q: 'Should I tip my movers?', a: 'Standard tip is $20-40 per mover for a local move, more for difficult moves. Tip in cash at the end.' }
+    ]
   },
-  'upper-west-side': {
-    buildingStock:
-      'Classic pre-war elevator buildings, brownstones, and larger post-war towers closer to the Hudson; many co-ops with board processes.',
-    transit:
-      '1/2/3 and A/B/C/D plus crosstown buses; weekend station work can shift routes and timing.',
-    landmarks:
-      'Central Park West, Riverside Park, Lincoln Center, and the 72nd/96th St transit hubs.',
-    commonChallenges:
-      'Older building systems, tight service entrances, and elevator scheduling in co-ops.',
-    context:
-      `Upper West Side housing runs from pre-war elevator buildings along West End and Central Park West to brownstones and newer towers closer to Columbus. Pre-war stock can mean thick walls (good for noise) but older plumbing, radiators, and legacy building infrastructure that needs careful maintenance. Co-ops are common, and that usually translates into clear rules for vendors, proof of insurance, and specific move/service windows.
-
-Transit is strong (1/2/3 and A/B/C/D), which helps for appointments that rely on subway access, but trucks and vans still contend with park traffic, school drop-offs, and busy avenues. The neighborhood’s mix of family buildings and high-foot-traffic corridors also means you’ll want to evaluate entry security and package areas carefully. Building Health X is useful here because it turns DOB/311/HPD signals into a quick “is this building improving or worsening” view across multiple time windows.`,
+  'packing-services': {
+    name: 'Packing Services',
+    description: 'Professional packing and unpacking services',
+    category: 'Moving Services',
+    intro: `Professional packing services take the most time-consuming part of moving off your plate. NYC apartments present unique challenges: deep but narrow closets, compact kitchens, and oddly-shaped alcoves. Professional packers arrive with the right boxes, materials, and techniques to pack efficiently and protect your belongings.`,
+    whyNeed: ['Professional packers work 3-5x faster than DIY packing', 'Proper techniques reduce damage during transport', 'Saves significant time when juggling work and move prep', 'Professionals bring all materials—no hunting for boxes', 'Insurance typically covers professionally packed items'],
+    whatToLookFor: [
+      { title: 'Materials Included', desc: 'Confirm boxes, tape, bubble wrap, and paper are included—not surprise extras.' },
+      { title: 'Unpacking Services', desc: 'Many offer unpacking at destination. Worth it to settle in quickly.' },
+      { title: 'Specialty Item Experience', desc: 'Ask about artwork, antiques, or fragile items if you have them.' },
+      { title: 'Labeling System', desc: 'Good packers label boxes with contents and destination room.' },
+      { title: 'Timeline Flexibility', desc: 'Can they pack the day before, or need multiple days?' }
+    ],
+    costRange: '$200–$400 for studios, $300–$600 for 1BR, $500–$1,000+ for larger',
+    timeline: 'Book 1-2 weeks ahead; packing usually done 1-2 days before move',
+    faqs: [
+      { q: 'Should I pack anything myself?', a: 'Pack personal items, valuables, and essentials. Let pros handle fragile items and furniture.' },
+      { q: 'How long does packing take?', a: 'A studio takes 2-3 hours, 1BR 3-5 hours, 2BR 5-8 hours.' },
+      { q: 'Do they bring all the boxes?', a: 'Yes, professional packers bring appropriately sized boxes and all packing materials.' },
+      { q: 'What about unpacking?', a: 'Most services offer unpacking—they\'ll place items and remove all materials.' }
+    ]
   },
-  harlem: {
-    buildingStock:
-      'Historic brownstones, pre-war walk-ups, and growing pockets of new development along major corridors; varied management quality block-to-block.',
-    transit:
-      '2/3, A/B/C/D, 1, and multiple buses; appointments can be easy by transit but parking varies widely.',
-    landmarks:
-      '125th Street, Apollo Theater, Marcus Garvey Park, and the St. Nicholas / Sugar Hill areas.',
-    commonChallenges:
-      'Older walk-up maintenance, inconsistent building management, and renovation/permit activity on active corridors.',
-    context:
-      `Harlem’s housing stock is diverse: landmarked brownstones, pre-war walk-ups, and newer mid-rise buildings along corridors like 125th and Frederick Douglass. That variety affects everything from move logistics to pest prevention — older masonry and shared basements can create entry points, while newer buildings may have stricter concierge and elevator policies.
-
-Subway access is broad (2/3, A/B/C/D, 1), making it convenient to visit by transit, but vehicle access can swing from straightforward avenues to tight side streets with limited loading space. Harlem also sees meaningful renovation and new construction activity, so DOB complaints and permits can be a useful early signal when you’re deciding whether a building is actively being improved or is stuck in a cycle of patchwork repairs. Building Health X helps you compare recent activity (30/90 days) against longer patterns (1–3 years) so you can spot whether issues are seasonal or structural.`,
+  'storage-facilities': {
+    name: 'Storage Facilities',
+    description: 'Short and long-term storage solutions',
+    category: 'Moving Services',
+    intro: `Storage in NYC serves a different purpose than elsewhere. Here, storage is often an extension of your living space—a way to make a small apartment livable by rotating seasonal items or holding furniture during lease gaps. Options range from traditional self-storage to full-service where companies pick up, store, and deliver.`,
+    whyNeed: ['NYC apartments are small—storage extends your living space', 'Useful during lease gaps or renovations', 'Seasonal item rotation (winter clothes, AC units, bikes)', 'Full-service options mean no truck rental needed', 'Climate control protects furniture and valuables'],
+    whatToLookFor: [
+      { title: 'Climate Control', desc: 'Essential for furniture, electronics, and anything sensitive to humidity.' },
+      { title: 'Access Hours', desc: 'Self-storage hours vary. Some offer 24/7, others limited access.' },
+      { title: 'Security Features', desc: 'Look for surveillance, individual unit alarms, and secure access.' },
+      { title: 'Full-Service Option', desc: 'They pick up, store, and deliver—no truck needed.' },
+      { title: 'Month-to-Month Terms', desc: 'Avoid long contracts unless you get a significant discount.' }
+    ],
+    costRange: '$100–$200/month for small, $200–$400 for medium, $400+ for large',
+    timeline: 'Can often start same week; full-service needs 2-3 days',
+    faqs: [
+      { q: 'Self-storage vs full-service?', a: 'Self-storage is cheaper but you transport items. Full-service costs more but they handle everything.' },
+      { q: 'Do I need climate control?', a: 'Yes for wood furniture, electronics, photos, leather. NYC summers are brutal on stored items.' },
+      { q: 'How much space do I need?', a: '5x5 fits boxes. 5x10 fits a studio. 10x10 fits a 1-2BR.' },
+      { q: 'What shouldn\'t I store?', a: 'Perishables, flammables, anything illegal, and irreplaceable items.' }
+    ]
   },
-  'east-village': {
-    buildingStock:
-      'Older walk-ups, tenements, and mixed-use buildings with ground-floor restaurants; fewer doorman towers than nearby neighborhoods.',
-    transit:
-      'L, 4/5/6, N/Q/R/W nearby; bus routes and bike traffic are constant, curb space is scarce.',
-    landmarks:
-      'Tompkins Square Park, St. Mark’s Place, and the 1st/2nd Ave nightlife corridors.',
-    commonChallenges:
-      'Noise from nightlife, pests tied to trash/food uses, and older building systems in walk-ups.',
-    context:
-      `East Village is defined by older walk-ups and mixed-use buildings where restaurants and bars sit below apartments. That’s great for energy and convenience, but it changes what “building health” looks like: nighttime noise, trash storage, and pest pressure are common watch-outs, and older plumbing and steam systems can mean recurring maintenance patterns.
-
-Because curb space is scarce and street activity is high, any service that requires equipment, a van, or repeated visits benefits from careful scheduling. Transit is strong (L and 4/5/6 nearby), but deliveries and appointments often depend on navigating busy avenues and narrow side streets. The neighborhood’s block-by-block variability is exactly where Building Health X helps: you can check whether a given address has a recent spike in 311 noise, HPD complaints, or DOB issues — and whether it’s trending better over the last year or getting worse.`,
+  'junk-removal': {
+    name: 'Junk Removal',
+    description: 'Fast and eco-friendly junk removal services',
+    category: 'Moving Services',
+    intro: `Junk removal in NYC isn't as simple as putting stuff on the curb. Large items require appointments with sanitation, and many things can't go curbside at all. Professional services handle the heavy lifting, navigate building rules, and ensure items are disposed of properly—or donated when possible.`,
+    whyNeed: ['NYC sanitation has strict rules about large item disposal', 'Buildings often prohibit leaving items in common areas', 'Heavy items are difficult to move through walk-ups', 'Many services donate usable items instead of landfilling', 'Same-day service available for urgent cleanouts'],
+    whatToLookFor: [
+      { title: 'Transparent Pricing', desc: 'Most charge by volume. Get quotes before they arrive.' },
+      { title: 'Donation Policy', desc: 'Good services donate usable items. Ask what percentage gets donated.' },
+      { title: 'Building Compliance', desc: 'They should know how to work with building staff and elevators.' },
+      { title: 'Same-Day Available', desc: 'Useful for urgent cleanouts or move-out deadlines.' },
+      { title: 'E-Waste Handling', desc: 'Electronics require special disposal. Confirm they handle e-waste properly.' }
+    ],
+    costRange: '$100–$250 for small loads, $300–$500 for half truck, $500–$800+ for full',
+    timeline: 'Often available same-day or next-day',
+    faqs: [
+      { q: 'How is pricing determined?', a: 'Usually by volume—how much space your items take in their truck.' },
+      { q: 'What can\'t they take?', a: 'Hazardous materials, chemicals, paint. Ask about specific items.' },
+      { q: 'Do they donate items?', a: 'Reputable services donate usable furniture and goods.' },
+      { q: 'Do I need to be present?', a: 'Usually yes for access and to confirm what goes.' }
+    ]
   },
-  'west-village': {
-    buildingStock:
-      'Low-rise historic buildings, converted townhouses, and smaller condo/co-op properties; fewer large modern towers.',
-    transit:
-      'A/C/E, 1/2/3, and PATH nearby; narrow streets complicate vehicle access and staging.',
-    landmarks:
-      'Washington Square Park edge, Hudson River Park, and the Bleecker/Christopher corridors.',
-    commonChallenges:
-      'Tight streets, limited loading, landmark constraints, and older building envelopes.',
-    context:
-      `West Village skews low-rise and historic: townhouses, small co-ops, and older buildings on narrow, often one-way streets. That makes vehicle staging and loading a real factor — even quick appointments can take longer if there’s nowhere to stop. Many buildings have older envelopes and mechanicals, which can translate into seasonal comfort issues and maintenance that’s more “craft” than plug-and-play.
-
-Transit access is strong, but for services that rely on vans or equipment, the street grid matters as much as the subway map. Landmark and historic-district considerations can also influence what owners can change quickly, which is why it’s useful to look at patterns over time. Building Health X lets you see the practical signals (HPD complaints, 311, DOB complaints) so you’re not relying on glossy listing photos to judge whether a building is well-run.`,
+  'cleaning-services': {
+    name: 'Cleaning Services',
+    description: 'Move-in and move-out deep cleaning',
+    category: 'Moving Services',
+    intro: `Move-in and move-out cleaning in NYC goes beyond regular cleaning. You're dealing with years of city grime and need to meet building or landlord standards. Professional cleaners have equipment and products to deep clean efficiently, which can help you get your security deposit back.`,
+    whyNeed: ['Deep cleaning helps recover your security deposit', 'NYC apartments accumulate city grime that needs professional treatment', 'Move-in cleaning ensures you start fresh', 'Saves time during already stressful moving period', 'Professional equipment reaches areas you can\'t'],
+    whatToLookFor: [
+      { title: 'Move-Out Guarantee', desc: 'Some cleaners guarantee landlord approval or re-clean free.' },
+      { title: 'Supplies Included', desc: 'Confirm they bring all cleaning supplies and equipment.' },
+      { title: 'Checklist Provided', desc: 'Professional services provide detailed checklists.' },
+      { title: 'Appliance Cleaning', desc: 'Oven, refrigerator interiors should be included.' },
+      { title: 'Window Cleaning', desc: 'Interior windows often included; exterior may cost extra.' }
+    ],
+    costRange: '$150–$250 for studios, $200–$350 for 1BR, $300–$500+ for 2BR+',
+    timeline: 'Book 3-5 days ahead; same-day possible at premium',
+    faqs: [
+      { q: 'Move-in or move-out cleaning?', a: 'Move-out focuses on deposit. Move-in ensures your new place is fresh.' },
+      { q: 'How long does it take?', a: 'Studios 2-3 hours, 1BR 3-4 hours, 2BR 4-6 hours.' },
+      { q: 'Will this help get my deposit back?', a: 'Yes. Professional cleaning addresses what landlords check.' },
+      { q: 'Before or after moving?', a: 'Move-out: after furniture gone. Move-in: before your stuff arrives.' }
+    ]
   },
-  chelsea: {
-    buildingStock:
-      'A mix of pre-war lofts, mid-century rentals, and newer high-rises; many buildings with elevators and package rooms.',
-    transit:
-      'A/C/E, 1/2/3, and the 7/High Line area; heavy traffic near Penn Station corridors.',
-    landmarks:
-      'High Line, Chelsea Market, and the Hudson Yards edge.',
-    commonChallenges:
-      'Construction activity, loading constraints, and managing noise/dust in dense blocks.',
-    context:
-      `Chelsea spans older loft-style buildings and pre-war stock near avenues, plus a growing set of newer high-rises toward the west side. That mix changes the practical checklist: modern towers may have strict move-in procedures and concierge rules, while older loft conversions can have quirks around freight elevators, deliveries, and building access.
-
-Chelsea’s proximity to major transit hubs and active development corridors means you’ll often see construction-related noise, temporary street closures, and heavier vehicle traffic. For renters, it’s worth checking whether a building’s “newly renovated” claims line up with complaint and violation patterns. Building Health X helps you look at recent activity (30/90 days) versus longer trends (1–3 years) so you can separate short-term disruption from ongoing management problems.`,
+  'tenant-lawyers': {
+    name: 'Tenant Lawyers',
+    description: 'Legal representation for tenant rights and disputes',
+    category: 'Pre-Lease Research',
+    intro: `NYC has some of the strongest tenant protections in the country, but knowing your rights and enforcing them are different things. Tenant lawyers help with lease reviews, rent overcharge claims, harassment cases, eviction defense, and repair disputes. Many offer free consultations.`,
+    whyNeed: ['NYC tenant law is complex—professionals know the nuances', 'Landlords have lawyers; you should too for serious disputes', 'Can recover rent overcharges going back years', 'Protection against illegal eviction attempts', 'Help navigating housing court procedures'],
+    whatToLookFor: [
+      { title: 'NYC Housing Specialization', desc: 'NYC tenant law is specific. Find someone who focuses on it.' },
+      { title: 'Free Consultation', desc: 'Most tenant lawyers offer free initial consultations.' },
+      { title: 'Contingency Options', desc: 'For overcharge cases, some work on contingency.' },
+      { title: 'Housing Court Experience', desc: 'They should regularly appear in NYC Housing Court.' },
+      { title: 'Tenant Org Connections', desc: 'Good lawyers often work with tenant advocacy groups.' }
+    ],
+    costRange: 'Free consultations common; hourly $200–$500; contingency for overcharge',
+    timeline: 'Consultations within days; cases can take months to years',
+    faqs: [
+      { q: 'When do I need a tenant lawyer?', a: 'For eviction, significant repair disputes, harassment, or if you suspect rent overcharges.' },
+      { q: 'How much does it cost?', a: 'Initial consultations often free. Ongoing varies by case type.' },
+      { q: 'What about free legal help?', a: 'NYC has free legal services for low-income tenants facing eviction.' },
+      { q: 'Can I handle Housing Court myself?', a: 'For simple matters, yes. For anything complex, get representation.' }
+    ]
   },
-  tribeca: {
-    buildingStock:
-      'Converted industrial lofts, luxury condos, and boutique doorman buildings; larger floorplates and freight-style layouts are common.',
-    transit:
-      '1/2/3, A/C/E, N/Q/R/W nearby; vehicle access varies with narrow cobblestone blocks.',
-    landmarks:
-      'Hudson River waterfront, Tribeca Park, and the Chambers/Canal corridors.',
-    commonChallenges:
-      'Loft building logistics, strict condo rules, and delivery timing in busy downtown streets.',
-    context:
-      `Tribeca is famous for loft conversions and boutique luxury buildings. Those loft layouts can be a dream, but they also bring specific operational realities: freight-style elevators, loading procedures, and building rules that are often enforced tightly. Street access can be tricky on narrower blocks, and timing matters when traffic stacks up.
-
-Because many Tribeca buildings are condos or co-ops with professional management, the paper trail for any service visit can be more formal — COIs, scheduling windows, and building staff coordination. For renters, the biggest question is often whether a building’s day-to-day operations match its premium pricing. Building Health X helps by turning the “invisible” signals — HPD issues, 311 complaints, DOB complaints — into a quick reality check.`,
+  'real-estate-agents': {
+    name: 'Real Estate Agents',
+    description: 'Tenant-focused brokers who work for you',
+    category: 'Pre-Lease Research',
+    intro: `Finding an apartment in NYC often involves brokers, but not all work in your interest. Tenant-focused agents help you find listings, negotiate lease terms, and navigate applications. Understanding the difference between landlord's brokers and tenant's agents can save you money.`,
+    whyNeed: ['Access to listings not on public sites', 'Help navigating NYC\'s competitive rental market', 'Negotiate lease terms and move-in costs', 'Guide through application and approval process', 'Knowledge of neighborhood-specific market conditions'],
+    whatToLookFor: [
+      { title: 'Tenant Representation', desc: 'Confirm they represent you, not the landlord.' },
+      { title: 'Fee Structure', desc: 'Understand who pays the broker fee.' },
+      { title: 'Neighborhood Expertise', desc: 'Agents specializing in your target areas know the buildings.' },
+      { title: 'Responsiveness', desc: 'NYC moves fast. You need quick responses.' },
+      { title: 'No-Fee Listings Access', desc: 'Good agents know which buildings offer no-fee apartments.' }
+    ],
+    costRange: 'Broker fees typically 1 month rent or 12-15% annual; many no-fee options',
+    timeline: 'Start searching 30-45 days before move date',
+    faqs: [
+      { q: 'Do I have to pay a broker fee?', a: 'Not always. Many buildings now pay the fee. Ask about no-fee listings.' },
+      { q: 'Listing vs tenant agents?', a: 'Listing agents represent the landlord. Tenant agents represent you.' },
+      { q: 'How far ahead should I look?', a: 'Most NYC listings are for 30-day move-in. Start 3-4 weeks before.' },
+      { q: 'Can I find an apartment without a broker?', a: 'Yes, through direct listings and no-fee platforms.' }
+    ]
   },
-  'hells-kitchen': {
-    buildingStock:
-      'Older walk-ups and mid-rise rentals mixed with newer high-rises toward the west; many buildings near busy avenues and tunnels.',
-    transit:
-      'A/C/E, N/Q/R/W, 1/2/3 nearby; traffic near Lincoln Tunnel can make appointments unpredictable.',
-    landmarks:
-      'Port Authority area, Restaurant Row (46th St), and the Hudson River greenway.',
-    commonChallenges:
-      'Street noise, traffic congestion, and mixed-use building issues in dense blocks.',
-    context:
-      `Hell’s Kitchen has a high density of rentals, from older walk-ups to newer towers closer to the Hudson. The neighborhood’s proximity to Port Authority and the Lincoln Tunnel shapes daily conditions: traffic, street noise, and late-night activity can all influence how a building feels — especially on lower floors or avenue-facing units.
-
-Transit options are excellent, but curb access for vans and service providers can be unpredictable. Many buildings are mixed-use, and that can increase wear on common areas and create pest pressure if trash storage isn’t managed well. Building Health X is useful here because you can compare a building’s recent 311 noise and HPD patterns to longer windows, and see whether management is proactively improving things or reacting after the fact.`,
+  'building-inspectors': {
+    name: 'Building Inspectors',
+    description: 'Professional pre-move building inspections',
+    category: 'Pre-Lease Research',
+    intro: `Before signing a lease, a professional inspection can reveal issues the landlord won't mention: pest evidence, water damage, mold, lead paint, or faulty electrical. In NYC's competitive market, this step can save you from a nightmare situation.`,
+    whyNeed: ['Identify hidden issues before signing a lease', 'Document existing damage to protect your deposit', 'Check for pests, mold, water damage, and safety hazards', 'Verify apartment matches listing claims', 'Leverage findings to negotiate repairs or rent'],
+    whatToLookFor: [
+      { title: 'Rental-Specific Experience', desc: 'Different from home buying. Find someone who knows rental issues.' },
+      { title: 'Pest Detection', desc: 'Should check for signs of roaches, mice, and bed bugs.' },
+      { title: 'Photo Documentation', desc: 'Detailed photos protect you when moving out.' },
+      { title: 'Quick Turnaround', desc: 'NYC moves fast—they should accommodate tight timelines.' },
+      { title: 'Written Report', desc: 'Get a detailed written report you can reference.' }
+    ],
+    costRange: '$150–$300 for standard apartment inspection',
+    timeline: 'Can often schedule within 2-3 days',
+    faqs: [
+      { q: 'Is an inspection worth it for a rental?', a: 'Yes, especially for longer leases or older buildings.' },
+      { q: 'What do they check?', a: 'Water pressure, electrical, appliances, windows, pests, mold, water damage.' },
+      { q: 'Can I use the report to negotiate?', a: 'Absolutely. Documented issues give you leverage.' },
+      { q: 'What if landlord won\'t allow inspection?', a: 'Red flag. Consider walking away.' }
+    ]
   },
-
-  // Brooklyn
-  williamsburg: {
-    buildingStock:
-      'New waterfront high-rises, mid-rise rentals, and older walk-ups inland; wide variability between “new luxury” and older stock.',
-    transit:
-      'L and G plus ferry; bridge traffic affects vans and delivery schedules.',
-    landmarks:
-      'Domino Park, Bedford Ave corridor, and the North Williamsburg waterfront.',
-    commonChallenges:
-      'Move logistics in towers, loading docks vs curb loading, and pest/odor issues near commercial corridors.',
-    context:
-      `Williamsburg has two distinct building worlds: newer high-rises and large rentals near the waterfront, and older walk-ups and small buildings farther inland. The tower set tends to have formal move procedures (elevator reservations, COIs, time windows), while older stock can have tighter stairs, older plumbing, and more variable management quality.
-
-Transit is strong (L/G and ferry), but vehicle access is shaped by bridge traffic and busy retail corridors, so timing matters for services that require a van or multiple visits. The neighborhood’s pace of renovation also means DOB filings can be a helpful signal when you’re trying to understand whether a building is being actively improved. Building Health X lets you compare recent complaint activity with longer patterns so you can avoid signing into a building that’s been “almost fixed” for years.`,
+  'renters-insurance': {
+    name: 'Renters Insurance',
+    description: 'Compare quotes and protect your belongings',
+    category: 'Pre-Lease Research',
+    intro: `Renters insurance is one of the most affordable ways to protect yourself in NYC. For roughly $15-30 per month, you get coverage for your belongings, liability protection, and additional living expenses if your place becomes uninhabitable. Many landlords now require it.`,
+    whyNeed: ['Protects belongings from theft, fire, and water damage', 'Liability coverage if someone is injured in your home', 'Many NYC landlords require proof of coverage', 'Covers additional living expenses if displaced', 'Surprisingly affordable—often under $20/month'],
+    whatToLookFor: [
+      { title: 'Coverage Amount', desc: 'Inventory your belongings. Most need $20,000-$50,000.' },
+      { title: 'Replacement vs Actual Value', desc: 'Get replacement cost—it pays for new items.' },
+      { title: 'Liability Limits', desc: '$100,000 minimum recommended; $300,000 for extra protection.' },
+      { title: 'Deductible Options', desc: 'Higher deductible = lower premium.' },
+      { title: 'Valuable Items Coverage', desc: 'Standard policies limit jewelry, electronics, art. Add riders if needed.' }
+    ],
+    costRange: '$12–$30/month for most NYC apartments',
+    timeline: 'Can get coverage same day; quotes in minutes online',
+    faqs: [
+      { q: 'Do I really need renters insurance?', a: 'Yes. Your landlord\'s insurance doesn\'t cover your belongings.' },
+      { q: 'What does it actually cover?', a: 'Your belongings, liability if someone is hurt, additional living expenses.' },
+      { q: 'How much coverage do I need?', a: 'Total the replacement cost of your belongings. Usually $20,000-$50,000.' },
+      { q: 'Does it cover my roommate?', a: 'Usually no. Each person typically needs their own policy.' }
+    ]
   },
-  bushwick: {
-    buildingStock:
-      'Older walk-ups and small multi-family buildings plus converted industrial lofts; many properties with shared basements and rear yards.',
-    transit:
-      'L, J/M/Z nearby depending on pocket; street parking is tight and truck access can be block-dependent.',
-    landmarks:
-      'Myrtle Ave, Wyckoff Ave, and the Morgan Ave industrial-to-loft corridor.',
-    commonChallenges:
-      'Converted loft entry points, trash storage issues, and block-by-block management differences.',
-    context:
-      `Bushwick’s building stock includes older walk-ups and a growing share of converted industrial lofts. Those conversions can look beautiful, but they often have unique pest entry points: loading-bay doors, utility penetrations, and shared basement spaces that weren’t originally designed for residential living. Small multi-family buildings can also vary widely in maintenance standards depending on ownership.
-
-Transit access depends on the exact pocket (L vs J/M/Z), and service logistics depend on curb space and block layout. Seasonal factors matter too: heavy rain can reveal building envelope issues, and hot summers can amplify trash and pest pressure if storage is limited. Building Health X helps you see recent HPD and 311 signals — and whether the trajectory is improving — so you can choose a building that’s being managed, not just marketed.`,
+  'internet-providers': {
+    name: 'Internet Providers',
+    description: 'High-speed internet options for your area',
+    category: 'Settling In',
+    intro: `Internet options in NYC vary dramatically by building and neighborhood. Some buildings have fiber with multiple providers; others are stuck with one slow option. Check availability before signing a lease if internet is critical for work.`,
+    whyNeed: ['Work from home requires reliable, fast internet', 'Options vary significantly by building—check before signing', 'Some buildings have exclusive deals with one provider', 'Fiber availability is expanding but not universal', 'Speeds advertised vs actual speeds often differ'],
+    whatToLookFor: [
+      { title: 'Building Availability', desc: 'Check which providers service your specific building.' },
+      { title: 'Fiber vs Cable', desc: 'Fiber offers faster, more reliable speeds.' },
+      { title: 'Actual Speed Tests', desc: 'Ask tenants or check speed test databases.' },
+      { title: 'Contract Terms', desc: 'Avoid long contracts. Many offer month-to-month.' },
+      { title: 'Installation Timeline', desc: 'Schedule before move-in. Waits can be weeks.' }
+    ],
+    costRange: '$40–$60 basic, $60–$80 mid-tier, $80–$100+ gigabit',
+    timeline: 'Order 1-2 weeks before move; installation times vary',
+    faqs: [
+      { q: 'Which provider is best in NYC?', a: 'Depends on your building. Fios is generally best where available.' },
+      { q: 'Can I get internet before I move in?', a: 'You can order but installation usually requires apartment access.' },
+      { q: 'What speed do I need?', a: '100 Mbps for most. 200+ for video calls. 500+ for multiple heavy users.' },
+      { q: 'My building only has one option?', a: 'Check if 5G home internet is available as an alternative.' }
+    ]
   },
-  'bedford-stuyvesant': {
-    buildingStock:
-      'Brownstones, small multi-family buildings, and pockets of newer infill; many older basements and shared yards.',
-    transit:
-      'A/C and G plus multiple buses; parking and loading vary by avenue vs side street.',
-    landmarks:
-      'Bedford Ave corridors, Herbert Von King Park, and the Nostrand/Franklin pockets.',
-    commonChallenges:
-      'Older building maintenance, basement moisture, and managing entry security in smaller buildings.',
-    context:
-      `Bedford-Stuyvesant is dominated by brownstones and small multi-family buildings, with newer infill scattered along busier corridors. That often means shared basements, older plumbing stacks, and building envelopes that need consistent upkeep. Many rentals are in smaller buildings without full-time staff, so management responsiveness matters a lot.
-
-Transit coverage is good (A/C and G nearby for many areas), but service appointments are shaped by curb access and the specific street. Basement moisture after storms can be a hidden driver of pests and odors, and entry security can vary widely based on hardware and lighting. Building Health X is useful here because it surfaces patterns from HPD and 311 so you can validate whether a landlord’s “we take care of things quickly” claim matches the building’s record.`,
+  'locksmith': {
+    name: 'Locksmith Services',
+    description: 'Lock changes and security upgrades',
+    category: 'Settling In',
+    intro: `Changing locks when you move into a new NYC apartment is smart security—you don't know who has copies from previous tenants. NYC tenants have the right to change locks (keeping a copy for the landlord). A locksmith can also upgrade your security.`,
+    whyNeed: ['Previous tenants may have key copies', 'NYC law allows tenants to change locks', 'Upgrade from basic locks to high-security options', 'Emergency lockout services when you\'re stuck', 'Can add additional security like deadbolts'],
+    whatToLookFor: [
+      { title: 'Licensed and Insured', desc: 'NYC requires locksmith licensing. Verify before hiring.' },
+      { title: 'Upfront Pricing', desc: 'Get a quote before work begins.' },
+      { title: 'Emergency Availability', desc: 'Find one with 24/7 service for lockouts.' },
+      { title: 'High-Security Options', desc: 'They should offer quality lock brands.' },
+      { title: 'Key Copy Policies', desc: 'Remember you must provide landlord with a key.' }
+    ],
+    costRange: '$75–$150 standard lock change; $150–$300 high-security; $100–$200 emergency lockout',
+    timeline: 'Same-day service usually available',
+    faqs: [
+      { q: 'Can I change locks in a rental?', a: 'Yes. NYC tenants can change locks. You must give landlord a copy.' },
+      { q: 'How much does a lock change cost?', a: 'Basic: $75-150. High-security: $150-300. Prices per lock.' },
+      { q: 'Should I upgrade to high-security locks?', a: 'Consider it for ground floor apartments.' },
+      { q: 'What about lockouts?', a: 'Emergency services cost $100-200. Keep a spare key with a neighbor.' }
+    ]
   },
-  'park-slope': {
-    buildingStock:
-      'Brownstones and pre-war rentals plus some newer condos along 4th Ave; many family-oriented buildings with strict quiet hours.',
-    transit:
-      '2/3, B/Q, F/G/R depending on area; Fifth/Seventh Ave traffic can slow vans.',
-    landmarks:
-      'Prospect Park edge, Grand Army Plaza, and the Fifth/Seventh Ave retail corridors.',
-    commonChallenges:
-      'Brownstone stairs, curb access on narrow streets, and maintenance patterns in older homes.',
-    context:
-      `Park Slope’s housing is heavily brownstone and pre-war, with a modern corridor of newer buildings along 4th Avenue. Brownstones are charming, but they create specific logistics: narrow stairwells, multiple floors, and older mechanical systems that can require ongoing attention. Many buildings are family-heavy, which can translate into stricter building rules and more sensitivity to noise and scheduling.
-
-Transit is excellent, but service work often depends on vehicle staging on narrow streets. When you’re renting, it’s worth checking how the building handles common pain points like heat consistency, water pressure, and trash storage. Building Health X helps you see whether a building has recurring complaint patterns — and whether those patterns are trending better over time.`,
+  'furniture-assembly': {
+    name: 'Furniture Assembly',
+    description: 'IKEA and flat-pack furniture assembly',
+    category: 'Settling In',
+    intro: `Flat-pack furniture is an NYC apartment staple—it's affordable and fits through narrow doorways. But assembly can be frustrating. Professional assemblers have tools and experience to get it done quickly and correctly.`,
+    whyNeed: ['Saves hours of frustrating DIY assembly', 'Professionals have proper tools and experience', 'Correctly assembled furniture is safer and lasts longer', 'Can handle complex pieces like PAX wardrobes, murphy beds', 'Often available same-day or next-day'],
+    whatToLookFor: [
+      { title: 'Flat Rate vs Hourly', desc: 'Flat rate per piece is often better for complex items.' },
+      { title: 'Tools Provided', desc: 'They should bring all necessary tools.' },
+      { title: 'Experience with Your Brand', desc: 'IKEA is common but other brands have quirks.' },
+      { title: 'Wall Mounting Included', desc: 'Confirm they do this if needed.' },
+      { title: 'Disposal of Packaging', desc: 'Good services remove all cardboard.' }
+    ],
+    costRange: '$50–$100 simple items; $100–$200 complex (PAX, beds); hourly $50–$80',
+    timeline: 'Often available same-day or next-day',
+    faqs: [
+      { q: 'Is professional assembly worth it?', a: 'For complex pieces, absolutely. Your time has value.' },
+      { q: 'How long does assembly take?', a: 'Simple bookshelf: 15-30 min. Bed: 45-90 min. PAX: 2-4 hours.' },
+      { q: 'Do they mount to walls?', a: 'Most will for an additional fee.' },
+      { q: 'What about disassembly for moving?', a: 'Many assemblers also disassemble.' }
+    ]
   },
-  'downtown-brooklyn': {
-    buildingStock:
-      'High-rise rentals and large new developments; many buildings with elevators, package rooms, and formal move-in procedures.',
-    transit:
-      'Huge transit hub: 2/3/4/5, A/C/F, N/Q/R/W, and more; traffic and deliveries are the main constraint.',
-    landmarks:
-      'Barclays Center vicinity, Fulton Mall, and the Civic Center courthouse/municipal core.',
-    commonChallenges:
-      'Elevator reservations, loading dock rules, and construction noise from ongoing development.',
-    context:
-      `Downtown Brooklyn is dominated by large new developments and high-rise rentals. That usually means formal building operations: concierge desks, package systems, COIs for vendors, and scheduled elevator time for big service jobs. It also means you should pay attention to how the building handles high resident volume — entry security, package overflow, and common-area upkeep.
-
-Transit is the neighborhood’s superpower (multiple lines converge), but vehicle access can be difficult due to traffic, deliveries, and frequent construction. For renters, the key is distinguishing “new building hiccups” from deeper management issues. Building Health X helps by showing whether complaint activity is settling down over time or staying elevated.`,
+  'painters': {
+    name: 'Painters',
+    description: 'Interior painting and wall repairs',
+    category: 'Settling In',
+    intro: `NYC apartments often need paint—whether covering previous tenant's bold colors or refreshing dingy walls. NYC law requires landlords to repaint every three years, but quality varies. Always get permission before painting a rental.`,
+    whyNeed: ['Fresh paint transforms a space quickly', 'Cover previous tenant\'s color choices', 'NYC law requires repainting every 3 years—but quality varies', 'Professional prep work ensures lasting results', 'Repair wall damage before moving out'],
+    whatToLookFor: [
+      { title: 'Prep Work Included', desc: 'Good jobs require wall repair, sanding, and priming.' },
+      { title: 'Paint Quality', desc: 'Ask what paint brand they use. Cheap paint doesn\'t last.' },
+      { title: 'Furniture Moving', desc: 'Do they move furniture and protect floors?' },
+      { title: 'Timeline Accuracy', desc: 'Get a realistic timeline.' },
+      { title: 'Touch-Up Policy', desc: 'Good painters return for touch-ups.' }
+    ],
+    costRange: '$300–$500 per room; whole apartment $800–$2,000+',
+    timeline: 'Book 1-2 weeks ahead; job takes 1-3 days',
+    faqs: [
+      { q: 'Can I paint my rental apartment?', a: 'Get written permission from your landlord first.' },
+      { q: 'How much does it cost?', a: 'Roughly $300-500 per room. Whole apartments $800-2000+.' },
+      { q: 'How long does painting take?', a: 'One room: 1 day. Whole apartment: 2-4 days.' },
+      { q: 'Before or after moving in?', a: 'Before. Much easier with empty rooms.' }
+    ]
   },
-  dumbo: {
-    buildingStock:
-      'Converted warehouses/lofts plus newer waterfront towers; many buildings with large freight elevators or strict condo policies.',
-    transit:
-      'F and A/C nearby plus ferry; cobblestone streets and tourism traffic affect staging.',
-    landmarks:
-      'Brooklyn Bridge Park, the waterfront piers, and the Washington Street photo corridor.',
-    commonChallenges:
-      'Cobblestones, loading access, condo rules, and wind-driven noise near the waterfront.',
-    context:
-      `DUMBO combines warehouse conversions with modern waterfront towers. Loft buildings can have great space, but they often come with freight-elevator logistics and unique building envelopes — large windows, older masonry, and waterfront exposure. Newer towers tend to be more standardized but can have stricter condo/management policies and controlled access.
-
-Transit options are good (F, A/C, ferry), yet vehicle staging can be complicated by tourism, cobblestone streets, and limited curb space. Waterfront exposure can amplify wind noise and moisture, which matters for comfort and maintenance. Building Health X gives you a data-first way to verify whether a building’s operations match its presentation.`,
+  'pest-control': {
+    name: 'Pest Control',
+    description: 'Bed bugs, roaches, rodents, and more',
+    category: 'Ongoing Needs',
+    intro: `Pests are an unfortunate reality of NYC apartment living. The density means problems spread easily between units. NYC landlords are legally required to provide pest control. For bed bugs especially, professional treatment is the only effective solution.`,
+    whyNeed: ['NYC density means pests spread easily between units', 'Bed bugs require professional treatment—no DIY solution works', 'Landlords are legally required to address infestations', 'Quick action prevents small problems from becoming major', 'Document issues for potential lease-breaking or legal action'],
+    whatToLookFor: [
+      { title: 'NYC Licensed', desc: 'Pest control requires state licensing. Verify credentials.' },
+      { title: 'Specific Pest Expertise', desc: 'Bed bugs, roaches, and rodents each require different approaches.' },
+      { title: 'Treatment Plan', desc: 'Should explain what they\'ll do and timeline.' },
+      { title: 'Follow-Up Included', desc: 'Most pests require multiple treatments.' },
+      { title: 'Guarantee', desc: 'Reputable services guarantee results.' }
+    ],
+    costRange: 'Roaches $100–$250; Bed bugs $300–$1,500; Rodents $150–$400',
+    timeline: 'Often available within 1-3 days',
+    faqs: [
+      { q: 'Who pays for pest control?', a: 'Your landlord is legally responsible in NYC.' },
+      { q: 'I think I have bed bugs—what do I do?', a: 'Confirm identification, notify landlord in writing, document everything.' },
+      { q: 'How do I prevent roaches?', a: 'Keep food sealed, don\'t leave dishes out, seal gaps around pipes.' },
+      { q: 'Can I break my lease for pest issues?', a: 'Potentially, if landlord fails to address. Document everything.' }
+    ]
   },
-  'crown-heights': {
-    buildingStock:
-      'Brownstones, pre-war walk-ups, and some larger rentals along Eastern Parkway; older basements are common.',
-    transit:
-      '2/3/4/5 and A/C nearby depending on pocket; street access is generally workable but varies by avenue.',
-    landmarks:
-      'Eastern Parkway, Brooklyn Museum edge, and Prospect Heights border areas.',
-    commonChallenges:
-      'Heat/hot water consistency in older stock, basement moisture, and block-to-block building management differences.',
-    context:
-      `Crown Heights has substantial pre-war stock — brownstones and walk-ups — plus larger rentals near major corridors like Eastern Parkway. Older basements and shared utility spaces can influence pest risk and maintenance patterns, and heating systems can vary from building to building depending on upgrades.
-
-Transit access is strong, and vehicle access is often easier than denser Manhattan neighborhoods, but the bigger variable is management quality. Two similar-looking buildings can behave very differently. Building Health X helps you compare addresses and see whether issues like heat complaints or pests show up as a recurring pattern or a one-off spike.`,
+  'hvac-repair': {
+    name: 'HVAC Repair',
+    description: 'Heating and cooling system repairs',
+    category: 'Ongoing Needs',
+    intro: `Heating and cooling issues are serious in NYC—winter heat is legally required, and summer without AC is brutal. Know who's responsible: landlords must provide heat and hot water, but AC maintenance varies by lease.`,
+    whyNeed: ['Legal heating requirements in NYC (Oct 1 – May 31)', 'No heat is an emergency—landlord must respond quickly', 'AC repair needs can be urgent in NYC summers', 'Window AC units require annual maintenance', 'PTAC units in newer buildings need specialized service'],
+    whatToLookFor: [
+      { title: 'NYC Experience', desc: 'NYC has unique systems—PTACs, steam radiators, window units.' },
+      { title: 'Emergency Service', desc: 'No heat in winter is an emergency. Find 24/7 availability.' },
+      { title: 'Landlord vs Tenant Systems', desc: 'Clarify what you\'re responsible for.' },
+      { title: 'Window Unit Service', desc: 'Many handle window AC installation and repair.' },
+      { title: 'Diagnostic Fee Policy', desc: 'Some charge fees that apply toward repair.' }
+    ],
+    costRange: 'Service calls $75–$150; repairs $150–$500; window AC service $100–$200',
+    timeline: 'Emergency same-day; routine 2-5 days',
+    faqs: [
+      { q: 'My heat isn\'t working—what do I do?', a: 'Notify landlord immediately in writing. No heat is an emergency.' },
+      { q: 'Who fixes my window AC?', a: 'If you own it, you do. If it came with apartment, check your lease.' },
+      { q: 'Can I install my own AC?', a: 'Usually yes for window units, but check lease.' },
+      { q: 'What\'s a PTAC unit?', a: 'Through-wall AC common in newer NYC buildings. Needs specialized service.' }
+    ]
   },
-  greenpoint: {
-    buildingStock:
-      'Older low-rise buildings and walk-ups plus new waterfront development; many properties with older pipes and basements.',
-    transit:
-      'G and ferry access; fewer subway options mean service providers often rely on vehicles.',
-    landmarks:
-      'McCarren Park edge, Manhattan Ave, and the waterfront at Transmitter Park.',
-    commonChallenges:
-      'Basement moisture near the waterfront, limited subway access, and mixed old/new building systems.',
-    context:
-      `Greenpoint mixes older low-rise buildings with a growing number of new waterfront developments. Older stock often means legacy plumbing, shared basements, and building envelopes that show wear during heavy rain. Newer buildings may be more standardized but can be stricter about access and vendor requirements.
-
-The G train and ferry help, but many service visits still depend on vehicle access because subway coverage is thinner than other parts of Brooklyn. Waterfront-adjacent blocks can also experience more moisture and wind, which can influence comfort and maintenance. Building Health X is handy here to spot whether a building’s issues are seasonal or persistent.`,
+  'plumbers': {
+    name: 'Plumbers',
+    description: 'Emergency and scheduled plumbing services',
+    category: 'Ongoing Needs',
+    intro: `Plumbing emergencies in NYC apartments can quickly affect multiple units. Know what you're responsible for vs your landlord. Most issues are landlord responsibility, but response times vary and sometimes you need faster help.`,
+    whyNeed: ['Plumbing emergencies can damage multiple units quickly', 'Clogged drains and leaks need fast response', 'Old NYC plumbing systems have unique quirks', 'Landlord response times vary', 'Document issues for landlord reimbursement'],
+    whatToLookFor: [
+      { title: 'NYC Licensed', desc: 'Plumbers must be licensed in NYC. Verify license number.' },
+      { title: '24/7 Emergency Service', desc: 'Plumbing emergencies don\'t wait.' },
+      { title: 'Apartment Building Experience', desc: 'NYC plumbing is interconnected.' },
+      { title: 'Upfront Pricing', desc: 'Get quotes before work begins.' },
+      { title: 'Warranty on Work', desc: 'Good plumbers stand behind their repairs.' }
+    ],
+    costRange: 'Service calls $100–$200; minor repairs $150–$350; major $400+',
+    timeline: 'Emergency same-day; routine 1-3 days',
+    faqs: [
+      { q: 'Who pays for plumbing repairs?', a: 'Generally your landlord. Keep receipts for potential reimbursement.' },
+      { q: 'My toilet is overflowing—what do I do?', a: 'Shut off the water valve behind the toilet. Contact landlord immediately.' },
+      { q: 'Can I fix things myself?', a: 'Minor fixes like plunging are fine. Anything else—call a pro.' },
+      { q: 'Building pipes are the issue?', a: 'Definitively landlord responsibility. Document what the plumber says.' }
+    ]
   },
-
-  // Queens
-  astoria: {
-    buildingStock:
-      'Low- to mid-rise rentals, many pre-war walk-ups, and newer buildings near the waterfront; a lot of small landlords.',
-    transit:
-      'N/W and some R/M access depending on area; vehicle access is generally manageable.',
-    landmarks:
-      'Astoria Park, Ditmars Blvd, and the Steinway corridor.',
-    commonChallenges:
-      'Older walk-up maintenance, trash storage, and pest pressure in basements/ground floors.',
-    context:
-      `Astoria is largely low- to mid-rise, with many walk-ups and smaller landlords. That often means fewer building staff and more variability in maintenance response times. Older basements and ground-floor units can be more sensitive to pests and moisture, especially when trash storage is tight.
-
-Transit is straightforward (N/W), and vehicle access tends to be easier than in Manhattan, which helps for services that need equipment or repeat visits. Astoria’s mix of residential blocks and busy commercial corridors means noise and trash conditions can change quickly from one street to the next. Building Health X helps you validate a specific address instead of assuming the neighborhood reputation applies to every building.`,
+  'electricians': {
+    name: 'Electricians',
+    description: 'Licensed electrical repairs and installations',
+    category: 'Ongoing Needs',
+    intro: `Electrical work in NYC apartments should always be done by licensed professionals—it's both a safety issue and legal requirement. Old NYC buildings often have outdated electrical systems struggling with modern demands.`,
+    whyNeed: ['Electrical work requires licensing in NYC—no DIY', 'Old buildings often have outdated, overtaxed systems', 'Tripping circuits usually indicates bigger problems', 'Outlet and fixture additions need professional installation', 'Safety issues require immediate attention'],
+    whatToLookFor: [
+      { title: 'NYC Licensed', desc: 'Electrical work requires licensing. Verify master electrician license.' },
+      { title: 'Landlord Notification', desc: 'Some work requires landlord permission and permits.' },
+      { title: 'Old Building Experience', desc: 'Pre-war electrical has quirks.' },
+      { title: 'Clear Communication', desc: 'They should explain findings and recommendations.' },
+      { title: 'Emergency Availability', desc: 'Electrical emergencies need immediate response.' }
+    ],
+    costRange: 'Service calls $100–$200; outlet repair $150–$300; larger work $300+',
+    timeline: 'Emergency same-day; routine 2-5 days',
+    faqs: [
+      { q: 'Can I do electrical work myself?', a: 'No. NYC requires licensed electricians. It\'s also dangerous.' },
+      { q: 'My circuits keep tripping?', a: 'Likely overloaded circuits. May need dedicated circuits.' },
+      { q: 'Who pays for electrical repairs?', a: 'Landlord pays for existing system. Upgrades are usually on you.' },
+      { q: 'Burning smell from outlet?', a: 'Stop using immediately, unplug everything, contact landlord and electrician. This is an emergency.' }
+    ]
   },
-  'long-island-city': {
-    buildingStock:
-      'New high-rise rentals and condos dominate, with some older industrial-to-residential edges; formal building operations are common.',
-    transit:
-      '7, E/M, N/W, and ferry; excellent access, but construction and loading can be intense.',
-    landmarks:
-      'Gantry Plaza State Park, Court Square, and the waterfront towers.',
-    commonChallenges:
-      'Elevator reservations, loading docks, ongoing construction noise, and high resident volume operations.',
-    context:
-      `Long Island City is defined by new high-rise development. That usually means elevators, package rooms, concierge desks, and formal vendor rules — great for predictability, but you’ll want to understand move/service policies before you commit. LIC also has active construction pockets, so dust and noise can be a real factor even in brand-new buildings.
-
-Transit access is exceptional (7/E/M/N/W and ferry), but vehicle staging can still be tricky due to loading zones and development traffic. Building Health X helps you see whether a building’s “newness” is translating into low complaint activity — or whether early operational issues are showing up in 311/HPD signals.`,
-  },
-  flushing: {
-    buildingStock:
-      'A mix of older low-rise buildings, multi-family homes, and newer mid-rises; density spikes near Main Street corridors.',
-    transit:
-      '7 train and LIRR; busy streets near Main St can affect service timing.',
-    landmarks:
-      'Downtown Flushing/Main Street, Flushing Meadows-Corona Park edge, and major shopping corridors.',
-    commonChallenges:
-      'High foot traffic near commercial core, mixed-use buildings, and coordinating access in multi-family homes.',
-    context:
-      `Flushing combines multi-family homes and older low-rise rentals with newer mid-rise buildings near its commercial core. Mixed-use buildings are common in the busiest areas, which can affect trash storage, deliveries, and pest pressure if waste handling isn’t tight. In smaller homes and subdivided buildings, access and clear responsibility for maintenance can be less formal.
-
-Transit access via the 7 train and LIRR is strong, but the Main Street area is extremely busy, making vehicle staging a factor for any service that involves equipment. Building Health X is useful here to see whether a particular address has recurring building issues, especially in dense mixed-use blocks.`,
-  },
-  'jackson-heights': {
-    buildingStock:
-      'Pre-war elevator buildings and co-ops, plus garden-style complexes; many buildings have shared courtyards and older systems.',
-    transit:
-      'E/F/M/R and 7; excellent transit but busy avenues for vehicles.',
-    landmarks:
-      '74th St–Broadway hub, Diversity Plaza, and the garden apartment districts.',
-    commonChallenges:
-      'Older building systems, co-op rules, and keeping common areas/pest prevention strong in dense buildings.',
-    context:
-      `Jackson Heights is known for pre-war elevator buildings, co-ops, and garden-style complexes with shared courtyards. Those buildings can be solid, but they’re also old enough that plumbing, heating, and facade maintenance patterns matter. Co-op rules may add structure (vendor insurance, scheduling), while dense common areas increase the importance of entry security and cleanliness.
-
-The neighborhood is extremely well-served by transit (E/F/M/R/7), though busy avenues can complicate vehicle access for certain services. Building Health X helps you see whether a building’s long-term maintenance is reflected in fewer recurring complaints — or whether issues keep resurfacing year after year.`,
-  },
-  ridgewood: {
-    buildingStock:
-      'Older walk-ups and small multi-family buildings, often with shared basements and rear yards; many blocks have tight stairwells and older utilities.',
-    transit:
-      'M and L nearby depending on pocket; vehicle access is usually workable but curb space varies.',
-    landmarks:
-      'Fresh Pond Rd corridor, Myrtle Ave, and the Queens–Brooklyn border blocks.',
-    commonChallenges:
-      'Basement moisture, pests in older stock, and varied management responsiveness in small buildings.',
-    context:
-      `Ridgewood’s rentals skew toward older walk-ups and small multi-family buildings. That often means shared basements, older pipes, and building envelopes that show stress during heavy rain or freeze-thaw cycles. In smaller buildings, the biggest variable is management responsiveness — repairs may be quick and proactive, or they may drag.
-
-Transit access depends on the pocket (M vs L), and service appointments can be easier than Manhattan thanks to more workable streets, but curb space still varies. Building Health X is useful for validating a specific address: you can check whether a building’s complaint history suggests consistent upkeep or recurring issues that never fully get resolved.`,
-  },
-  sunnyside: {
-    buildingStock:
-      'A mix of low-rise rentals, co-ops, and the Sunnyside Gardens-style stock; many buildings have older systems but stable management.',
-    transit:
-      '7 train plus buses; easy Midtown access makes scheduling flexible.',
-    landmarks:
-      'Sunnyside Gardens, Skillman Ave, and the Queens Blvd corridor.',
-    commonChallenges:
-      'Co-op rules, older plumbing/heating, and managing noise near Queens Blvd.',
-    context:
-      `Sunnyside features low-rise rentals and co-ops, including the Sunnyside Gardens area, which tends to have stable, community-minded building management. Older systems are still common, so heat consistency, water pressure, and building envelope maintenance are worth checking, especially in winter.
-
-The 7 train makes Midtown access easy, which is helpful for scheduling services and commuting. Noise conditions can differ dramatically depending on proximity to Queens Boulevard. Building Health X helps you compare addresses within the neighborhood and see whether an individual building’s record matches the calm, residential feel many renters expect.`,
-  },
-
-  // Bronx
-  fordham: {
-    buildingStock:
-      'Dense pre-war apartment buildings and multi-family stock; high foot traffic near commercial corridors and campuses.',
-    transit:
-      'B/D trains and Metro-North nearby; busy retail streets can affect deliveries.',
-    landmarks:
-      'Fordham University, the Grand Concourse edge, and Fordham Rd shopping corridor.',
-    commonChallenges:
-      'High-traffic buildings, older maintenance cycles, and keeping entry security strong.',
-    context:
-      `Fordham is dense and campus-adjacent, with substantial pre-war apartment stock and high foot traffic near Fordham Road. In busy buildings, the basics matter a lot: secure entries, clear trash handling, and consistent maintenance of common areas. Older systems can create recurring patterns around heat, hot water, and plumbing.
-
-Transit access is solid (B/D and Metro-North nearby), but vehicle staging near retail corridors can be challenging. Building Health X helps you see whether a building’s issues are occasional or persistent by comparing recent complaint windows to longer history.`,
-  },
-  kingsbridge: {
-    buildingStock:
-      'Pre-war and mid-century buildings, many larger rentals along major avenues; hilly streets and older basements are common.',
-    transit:
-      '1 and 4 lines nearby; vehicle access varies with hills and bridge traffic.',
-    landmarks:
-      'Broadway corridor, Kingsbridge Armory area, and the Harlem River crossings.',
-    commonChallenges:
-      'Older building maintenance, basement moisture, and logistics on hilly blocks.',
-    context:
-      `Kingsbridge features larger pre-war and mid-century buildings along major avenues, with hilly topography that affects both daily life and service logistics. Older basements and utility spaces can be more sensitive to moisture, which matters for pests and odors.
-
-Transit is straightforward (1 and 4), but vehicle timing can be influenced by bridge approaches and hills. Building Health X helps you evaluate whether a specific building’s maintenance is keeping pace with its age, or whether complaints and violations suggest chronic neglect.`,
-  },
-  riverdale: {
-    buildingStock:
-      'More suburban-feeling mid-rises, co-ops, and some single-family/multi-family stock; greener blocks and larger properties.',
-    transit:
-      '1 line at the edge plus Metro-North; cars are more common, which influences service preferences.',
-    landmarks:
-      'Wave Hill, Riverdale Park, and the Hudson River viewpoints.',
-    commonChallenges:
-      'Distance/logistics for providers, co-op rules, and weather exposure on higher elevations.',
-    context:
-      `Riverdale’s housing mix leans toward co-ops, mid-rises, and a more suburban pattern with greener blocks and larger properties. Because many residents rely on cars and the area is farther from central hubs, service scheduling and provider coverage matter more than in Manhattan.
-
-Weather exposure and elevation can influence building envelope needs, and co-op rules are common. Building Health X helps by giving you an objective view of building issues so you can focus on properties that are well-managed, not just well-located.`,
-  },
-  'mott-haven': {
-    buildingStock:
-      'Pre-war rentals and a fast-growing set of new developments; active construction/renovation corridors.',
-    transit:
-      '4/5/6 and Metro-North nearby; vehicle access is generally workable but construction can reroute streets.',
-    landmarks:
-      'Bruckner Blvd corridors, the waterfront projects, and Third Ave commercial strips.',
-    commonChallenges:
-      'New-building shakeouts vs older-stock maintenance, construction noise, and street changes.',
-    context:
-      `Mott Haven has rapid new development alongside older pre-war rentals. New buildings can have early operational hiccups (elevators, package flow, finishing issues), while older buildings can show recurring maintenance patterns. Construction activity is common, which can affect noise and street access.
-
-Transit coverage is strong, and vehicle access is usually workable, but timing can change with street work. Building Health X is helpful for separating “normal new-building settling” from management issues that keep showing up in complaints.`,
-  },
-  'pelham-bay': {
-    buildingStock:
-      'A mix of mid-century buildings, garden-style complexes, and multi-family homes; more space but older systems remain common.',
-    transit:
-      '6 train terminus area plus buses; many residents use cars.',
-    landmarks:
-      'Pelham Bay Park, Orchard Beach access, and the Hutchinson River Parkway vicinity.',
-    commonChallenges:
-      'Provider coverage distances, weather exposure, and maintaining older mechanical systems.',
-    context:
-      `Pelham Bay feels more spacious, with garden-style complexes, mid-century buildings, and multi-family homes. Because it’s farther from Manhattan, provider coverage and travel time can influence service availability and pricing. Older mechanical systems are still common, so consistent maintenance matters.
-
-Transit exists via the 6 train and buses, but many residents rely on cars, which shapes what “convenient” service looks like. Building Health X helps you focus your search on buildings with fewer persistent issues, especially when you can’t easily pop over for repeat walkthroughs.`,
-  },
-
-  // Staten Island
-  'st-george': {
-    buildingStock:
-      'Older low- to mid-rise buildings plus newer waterfront rentals; mix of small landlords and larger managed properties.',
-    transit:
-      'Staten Island Ferry hub; strong Manhattan access but local trips often depend on buses and cars.',
-    landmarks:
-      'Staten Island Ferry Terminal, Richmond County Bank Ballpark area, and the waterfront promenade.',
-    commonChallenges:
-      'Ferry-adjacent noise/traffic, mixed building quality, and coordinating service logistics across boroughs.',
-    context:
-      `St. George is Staten Island’s ferry hub, which shapes daily patterns: commuter traffic, waterfront exposure, and a mix of older buildings with newer rentals near the terminal. Some properties are professionally managed, while others are smaller-landlord buildings where maintenance quality can vary.
-
-Ferry access is great for Manhattan commutes, but local service logistics often depend on buses and cars. For renters, it’s worth checking whether ferry-adjacent convenience comes with noise or operational tradeoffs. Building Health X helps you spot recurring patterns in complaints and violations so you can choose a building that’s stable, not just well-positioned.`,
-  },
-  stapleton: {
-    buildingStock:
-      'Older low-rise and small multi-family buildings with pockets of newer development; many properties with basements and shared yards.',
-    transit:
-      'Staten Island Railway plus buses; vehicle access is common and affects service preferences.',
-    landmarks:
-      'Stapleton waterfront areas, Victory Blvd corridors, and access toward the ferry via rail.',
-    commonChallenges:
-      'Older-stock upkeep, moisture management, and provider coverage variability.',
-    context:
-      `Stapleton includes older low-rise buildings and small multi-family homes, with pockets of newer development. Older basements and shared yard spaces can drive maintenance needs around moisture and pests, while smaller-building management can be less standardized.
-
-The Staten Island Railway helps for ferry connectivity, but most service appointments assume vehicle access. Building Health X gives renters a way to check a specific address’s complaint and violation patterns before committing — especially important when buildings on adjacent blocks can have very different upkeep standards.`,
-  },
-}
-
-function getProfile(location: Location): LocationProfile {
-  const base: LocationProfile =
-    LOCATION_PROFILES[location.slug] || {
-      buildingStock: 'A mix of older and newer NYC apartment buildings.',
-      transit: 'Subway and bus access varies by pocket.',
-      landmarks: location.name,
-      commonChallenges: 'Building operations and maintenance vary by property.',
-      context:
-        `${location.name} has a blend of building types and management styles, which is why it helps to validate any address with objective signals. Building Health X aggregates NYC open data so you can spot recurring issues and compare recent activity to longer patterns.`,
-    }
-
-  return { ...base, context: extendContext(location, base) }
-}
-
-function serviceWhySection(service: Service, location: Location, profile: LocationProfile): string {
-  const baseIntro = `Residents in ${location.name} tend to look for ${service.name.toLowerCase()} when the practical reality of the neighborhood meets the practical reality of the building.`
-
-  switch (service.slug) {
-    case 'moving-companies':
-      return (
-        `${baseIntro} In this area, move-day success usually comes down to logistics: access to the building, stairs vs elevators, and whether management requires scheduled elevator time or a certificate of insurance. ${profile.buildingStock} If you’re moving into a doorman or managed building, ask about move windows, protection requirements for hallways, and how elevator reservations work. For walk-ups, confirm how many flights your crew expects and whether bulky items need disassembly.
-
-Street conditions matter too. ${profile.transit} Busy corridors and limited loading can create “hidden costs” if a truck can’t stage close to the entrance. A good mover in ${location.name} will proactively plan for curb access, communicate arrival windows, and protect common areas to avoid building fines. Seasonal timing also matters — summer weekends can be crowded and winter weather can slow carries.
-
-Before you sign a lease, run the address in Building Health X to sanity-check the building’s record. If you see recurring elevator outages, DOB complaints, or frequent resident reviews about management delays, you may want extra buffer time (and stronger documentation) for move-in coordination.`
-      )
-    case 'tenant-lawyers':
-      return (
-        `${baseIntro} Tenant-law issues are rarely generic — they’re shaped by building type and management behavior. ${profile.buildingStock} In neighborhoods with older stock, you may see recurring heat/hot water disputes, repair delays, or access issues during renovations. A tenant lawyer can help you document conditions, understand your options, and communicate in a way that creates a clear record if the situation escalates.
-
-Local context changes the playbook. In ${location.name}, it’s common to need guidance on lease renewals, habitability complaints, security deposit disputes, and how to respond when a landlord claims a problem is “temporary” but the pattern repeats. Seasonal issues also show up — winter heat problems and summer pest pressure are the usual triggers.
-
-Building Health X can support your documentation by showing objective, time-windowed signals tied to the address (HPD complaints, DOB complaints, 311 noise trends). If you’re choosing counsel, look for someone who can translate those signals into a clear strategy: what to request, what to document, and what timeline is realistic for resolution.`
-      )
-    case 'renters-insurance':
-      return (
-        `${baseIntro} Renter’s insurance decisions are very building-specific. ${profile.buildingStock} In doorman towers you might worry less about package theft but more about water damage from neighboring units; in older walk-ups, plumbing backups and radiator/steam incidents can be more common. In either case, the key is choosing coverage that matches how the building actually behaves.
-
-In ${location.name}, think through the risks that show up in everyday living: does the building have a history of leaks, recurring maintenance delays, or security issues? Coverage choices like personal property limits, loss-of-use (temporary housing), and liability can matter more than the headline premium. If you’re near busy corridors, consider add-ons that fit higher foot traffic and delivery volume.
-
-Use Building Health X as a reality check. If the address shows repeated HPD or DOB activity related to building systems, that’s a cue to pay attention to water damage coverage and loss-of-use. If noise/security complaints are prominent, it’s a reminder to document valuables and consider how you receive packages. Insurance is cheapest when you set it up before problems start — and most useful when it matches the building’s actual risk profile.`
-      )
-    case 'pest-control':
-      return (
-        `${baseIntro} Pest issues in NYC are usually building-system issues: trash storage, basement moisture, gaps around pipes, and neighbor-to-neighbor spread. ${profile.buildingStock} In older stock, shared basements and utility chases can make it easy for roaches and mice to move between units. In mixed-use buildings, food uses and frequent deliveries can increase pressure if waste handling isn’t tight.
-
-In ${location.name}, a good pest control provider should start with inspection and exclusion — sealing entry points, addressing moisture, and coordinating with building management — not just repeated spraying. Ask how they handle common NYC pests (roaches, mice, bed bugs) and whether they provide documentation you can share with management. Timing matters too: summer brings higher roach activity, and colder months often push mice indoors.
-
-Building Health X can help you decide whether a problem is isolated or systemic. If you see persistent HPD-related complaint patterns tied to sanitation, pests, or building maintenance, that’s a sign you may need building-wide action, not just a unit-level treatment. Use the 30/90-day window to see if management is responding, and the 1–3 year view to see whether the issue is chronic.`
-      )
-    case 'storage-facilities':
-      return (
-        `${baseIntro} Storage is often a “neighborhood logistics” problem: how easy it is to get a car/van to the facility, whether you need climate control, and how often you’ll visit. ${profile.transit} In ${location.name}, the best choice depends on whether you’re storing for a move, renovating, or just freeing up space in a smaller apartment.
-
-Look for practical features: loading bays or easy curb access, elevator availability, wide corridors for carts, and hours that match your schedule. Climate control can be worth it if you’re storing anything sensitive to humidity (books, instruments, electronics). Security matters too — cameras and controlled access are baseline, but staffing and lighting can make a real difference.
-
-Use Building Health X to plan proactively. If your building has ongoing repairs, DOB activity, or recurring maintenance issues, short-term storage can give you flexibility during disruptions. And if you’re moving within the neighborhood, storage can help you avoid forcing a tight move-out/move-in overlap.`
-      )
-    case 'building-inspectors':
-      return (
-        `${baseIntro} A building inspection is most valuable when it’s tailored to the building stock and the problems that show up locally. ${profile.buildingStock} In older buildings, inspectors can focus on water intrusion, heat/hot water consistency, electrical panels, signs of pests, and the condition of common areas. In newer buildings, the focus shifts to workmanship, ventilation, and whether systems are operating as advertised.
-
-In ${location.name}, inspectors who understand NYC rentals will look beyond the unit’s fresh paint. They’ll check the “invisible” risks: moisture in basements, evidence of recurring leaks, window/door sealing that affects noise and drafts, and the building’s operational basics (trash, security, egress). Seasonal context matters — winter reveals heating issues, and summer reveals ventilation and pest pressure.
-
-Pair the inspection with Building Health X. If the address shows repeated HPD/DOB activity, bring that to the inspection and ask targeted questions. The goal is not perfection — it’s knowing what’s likely to become your problem after you sign.`
-      )
-    default:
-      return `${baseIntro} ${profile.buildingStock} Building Health X can help you validate a specific address before you commit.`
-  }
-}
-
-function whatToLookFor(service: Service): string[] {
-  switch (service.slug) {
-    case 'moving-companies':
-      return [
-        'Transparent estimates with inventory and stairs/elevator assumptions called out',
-        'Proof of insurance that matches NYC building requirements',
-        'Crew that protects hallways, elevators, and corners (not just your furniture)',
-        'Clear plan for parking/loading and communication on arrival windows',
-      ]
-    case 'tenant-lawyers':
-      return [
-        'Experience with NYC housing court and habitability/repair disputes',
-        'Clear documentation guidance (photos, logs, written requests)',
-        'Upfront fee structure and realistic timelines',
-        'Willingness to coordinate with agencies when appropriate',
-      ]
-    case 'renters-insurance':
-      return [
-        'Coverage that fits your building risk (water damage + loss-of-use)',
-        'Replacement cost for personal property (not just actual cash value)',
-        'Liability limits appropriate for roommates/guests',
-        'Easy claims process and clear documentation requirements',
-      ]
-    case 'pest-control':
-      return [
-        'Inspection-first approach with exclusion/sealing recommendations',
-        'Clear plan for building-wide coordination (not unit-only fixes)',
-        'Treatment options for roaches, mice, and bed bugs with safety guidance',
-        'Documentation you can share with management/landlord',
-      ]
-    case 'storage-facilities':
-      return [
-        'Easy loading access (elevator/carts) and hours that match your schedule',
-        'Security basics: controlled access, cameras, lighting, staffed desk',
-        'Climate control if you’re storing humidity-sensitive items',
-        'Transparent pricing and move-in/move-out policies',
-      ]
-    case 'building-inspectors':
-      return [
-        'NYC-rental specific checklist: moisture, pests, heat/hot water, safety basics',
-        'Clear written report with photos and prioritized findings',
-        'Comfort interpreting building history (violations/complaints) into risk',
-        'Independent, unbiased recommendations (not upsells)',
-      ]
-    default:
-      return ['Strong reviews, transparent pricing, and NYC-specific experience']
-  }
-}
-
-function dataInsights(service: Service, location: Location, profile: LocationProfile): string {
-  // Data-driven without inventing numeric neighborhood stats.
-  return `Building Health X is built on NYC open data (HPD violations/complaints, DOB complaints, 311 calls, and more). In ${location.name}, that’s especially useful because ${profile.commonChallenges.toLowerCase()}. When you run an address, try comparing the 30/90-day window against the 1–3 year view: a short-term spike can mean a temporary issue (a broken boiler or a noisy renovation), while a long-term pattern suggests management or building-system problems.
-
-For ${service.name.toLowerCase()} decisions, focus on the signals most related to your risk: heat/hot water and building violations for habitability, 311 noise trends for quality-of-life, and complaint clusters that repeat across seasons. If you see repeated issues around the same category, bring that context into your provider conversation — it helps you ask better questions and set realistic expectations.`
-}
-
-export function getServiceLandingCopy(service: Service, location: Location) {
-  const profile = getProfile(location)
-  return {
-    hero: {
-      title: `${service.name} in ${location.name}`,
-      subtitle:
-        `Find a vetted path to help in ${location.name}, backed by address-level building signals from NYC open data.`,
-    },
-    locationContext: profile.context,
-    whyResidentsNeed: serviceWhySection(service, location, profile),
-    whatToLookFor: whatToLookFor(service),
-    localTips: `Local considerations for ${location.name}: ${profile.transit} Nearby reference points include ${profile.landmarks}. Building context: ${profile.buildingStock}`,
-    dataDriven: dataInsights(service, location, profile),
+  'mold-remediation': {
+    name: 'Mold Remediation',
+    description: 'Professional mold testing and removal',
+    category: 'Ongoing Needs',
+    intro: `Mold is common in NYC apartments due to humidity and older building systems. Small amounts can be cleaned yourself, but significant growth requires professional remediation. NYC landlords are required to address mold conditions.`,
+    whyNeed: ['NYC humidity and old buildings create mold-friendly conditions', 'Professional remediation needed for significant growth', 'NYC landlords are legally required to address mold', 'Health impacts can be serious with prolonged exposure', 'Document for potential lease-breaking or legal action'],
+    whatToLookFor: [
+      { title: 'Certified Professionals', desc: 'Look for IICRC certification or similar.' },
+      { title: 'Testing Services', desc: 'Professional testing identifies mold type and extent.' },
+      { title: 'Source Identification', desc: 'Good remediators find the moisture source, not just remove mold.' },
+      { title: 'Containment Protocols', desc: 'Proper remediation contains spores during removal.' },
+      { title: 'Post-Remediation Testing', desc: 'Follow-up testing confirms success.' }
+    ],
+    costRange: 'Testing $200–$500; remediation $500–$3,000+ depending on extent',
+    timeline: 'Testing 1-3 days; remediation scheduling 1-2 weeks',
+    faqs: [
+      { q: 'Who pays for mold remediation?', a: 'Your landlord if due to building issues. You if from your actions.' },
+      { q: 'Can I clean mold myself?', a: 'Small areas (under 10 sq ft) of surface mold, yes. Larger requires pros.' },
+      { q: 'Is mold dangerous?', a: 'Some molds cause respiratory problems and allergies. Take it seriously.' },
+      { q: 'Can I break my lease for mold?', a: 'Potentially, if severe and landlord fails to remediate. Document everything.' }
+    ]
   }
 }
